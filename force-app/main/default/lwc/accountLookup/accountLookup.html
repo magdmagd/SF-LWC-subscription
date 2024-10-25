@@ -1,10 +1,33 @@
+
 <template>
-    <lightning-combobox
-        name="account"
-        label={label}
-        placeholder="Search Accounts"
-        options={accountOptions}
-        value={value}
-        onchange={handleSelect}>
-    </lightning-combobox>
+    <lightning-card title="Account Lookup">
+        <div class="slds-m-around_medium">
+            <lightning-input
+                type="text"
+                label={label}
+                placeholder="Search Accounts..."
+                onchange={handleSearchChange}
+                value={searchTerm}
+            ></lightning-input>
+
+            <template if:true={accounts}>
+                <ul class="slds-listbox slds-listbox_vertical">
+                    <template for:each={accounts} for:item="account">
+                        <li key={account.Id} class="slds-listbox__item">
+                            <lightning-button
+                                label={account.Name}
+                                onclick={handleAccountSelect}
+                                data-id={account.Id}
+                                class="slds-m-top_x-small"
+                            ></lightning-button>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template if:true={error}>
+                <p class="slds-text-color_error">Error: {error}</p>
+            </template>
+        </div>
+    </lightning-card>
 </template>

@@ -1,32 +1,42 @@
-import { LightningElement, track, wire, api } from 'lwc';
-import findAccounts from '@salesforce/apex/AccountController.findAccounts'; // Apex method
+import { LightningElement, api, track } from 'lwc';
+import findAccounts from '@salesforce/apex/AccountController.findAccounts';
 
 export default class AccountLookup extends LightningElement {
-    @api label; // Label for the lookup field
-    @api value; // Selected value (Account Id)
-    @track accountOptions = []; // Options to show in the dropdown
+    @track searchTerm = ''; // Holds the current search term
+    @track accounts; // Holds the list of account results
+    @track error; // Holds any error
 
-    // Handle when a user selects an account from the dropdown
-    handleSelect(event) {
-        this.value = event.detail.value;
+    // Public property for the input label
+    @api label = 'Account Lookup';
 
-        // Dispatch an event to notify parent of the selected Account
-        const selectedEvent = new CustomEvent('select', {
-            detail: { value: this.value }
-        });
-        this.dispatchEvent(selectedEvent);
+    // Called when the search term changes
+    handleSearchChange(event) {
+        this.searchTerm = event.target.value;
+
+        if (this.searchTerm.length >= 2) {
+            // Fetch matching accounts from Apex
+            findAccounts({ searchTerm: this.searchTerm })
+                .then((result) => {
+                    this.accounts = result;
+                    this.error = undefined;
+                })
+                .catch((error) => {
+                    this.error = error.body.message;
+                    this.accounts = undefined;
+                });
+        } else {
+            this.accounts = undefined; // Reset the account list if the search term is too short
+        }
     }
 
-    // Wire the method to search for accounts based on user input
-    @wire(findAccounts)
-    wiredAccounts({ error, data }) {
-        if (data) {
-            this.accountOptions = data.map(account => {
-                return { label: account.Name, value: account.Id };
-            });
-        } else if (error) {
-            this.accountOptions = [];
-            console.error('Error fetching accounts:', error);
-        }
+    // Called when an account is selected
+    handleAccountSelect(event) {
+        const accountId = event.target.dataset.id;
+
+        // Dispatch a custom event to notify the parent component
+        const selectEvent = new CustomEvent('select', {
+            detail: { accountId }
+        });
+        this.dispatchEvent(selectEvent);
     }
 }

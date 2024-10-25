@@ -7,8 +7,8 @@ export default class SubscriptionForm extends LightningElement {
     @track currency;
     @track tier;
     @track description;
-    @track selectedProduct;
-    @track selectedAccount;
+    @track selectedProductId;
+    @track selectedAccountId;
 
     currencyOptions = [
         { label: 'USD', value: 'USD' },
@@ -63,35 +63,43 @@ export default class SubscriptionForm extends LightningElement {
                 currency: this.currency,
                 tier: this.tier,
                 description: this.description,
-                selectedProduct: this.selectedProduct,
-                selectedAccount: this.selectedAccount
+                selectedProduct: this.selectedProductId,
+                selectedAccount: this.selectedAccountId
             }
         }));
     }//end handleNext()
 
 
-    handleSubmit() {
-        createSubscription({
+    handleSubmit() 
+    {
+
+        console.log('Selected Account ID:', this.selectedAccountId);
+        createSubscription(
+        {
             subscriptionType: this.subscriptionType,
             subscriptionName: this.subscriptionName,
             value: this.value,
             currency: this.currency,
             tier: this.tier,
             description: this.description,
-            productId: this.selectedProduct,
-            accountId: this.selectedAccount
-        })
+            selectedProduct: this.selectedProductId,
+            selectedAccount: this.selectedAccountId
+        })      
         .then(result => {
-            if (result.startsWith('Error')) {
+            if (result.startsWith('Error'))
+            {
                 // Show error message
-            } else {
+            } 
+            else 
+            {
                 // Show success message and possibly reset form
             }
         })
-        .catch(error => {
+        .catch(error => 
+            {
             console.error('Error creating subscription:', error);
-        });
-    }
+            });
+     }
 
     handleCancel()
     {
