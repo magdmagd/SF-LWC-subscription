@@ -1,21 +1,13 @@
 <template>
-    <template if:true={showForm}>
-        <c-subscription-form
-            onnext={handleNext}>
-        </c-subscription-form>
+    <template if:true={isForm}>
+        <c-subscription-form onnext={handleNext}></c-subscription-form>
     </template>
-
-    <template if:true={showSummary}>
+    
+    <template if:true={isSummary}>
         <c-subscription-summary
-            account-id={accountId}
-            product-id={productId}
-            subscription-type={subscriptionType}
-            name ={subscriptionName}
-            tier={tier}
-            value={value}
-            description={description}
+            subscription-data={subscriptionData}
             onback={handleBack}
-            onconfirm={handleConfirm}>
+            onfinish={handleFinish}>
         </c-subscription-summary>
     </template>
 </template>

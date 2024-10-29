@@ -1,26 +1,69 @@
 <template>
-    <lightning-card title="Create Subscription" icon-name="action:new">
-        <lightning-input label="Subscription Name" value={subscriptionName} onchange={handleInputChange} required></lightning-input>        
-        <lightning-input label="Value" type="currency" value={value} onchange={handleInputChange} required></lightning-input>
+    <lightning-card title="Subscription Form">
+        <lightning-input
+        type="text"
+        label="Name"
+        value={name}
+        onchange={handleChange}
+        data-id="name" required>
+    </lightning-input>
+
+        <lightning-combobox
+            label="Subscription Type"
+            value={subscriptionType}
+            options={subscriptionTypeOptions}
+            onchange={handleChange}
+            data-id="subscriptionType" required>
+        </lightning-combobox>
+
+        <lightning-input
+            type="currency"
+            label="Value"
+            value={value}
+            onchange={handleChange}
+            data-id="value" required>
+        </lightning-input>
+
         
-        <lightning-combobox label="Subscription Type" value={subscriptionType} onchange={handleInputChange} required options={subscriptionTypeOptions}></lightning-combobox>
-        <lightning-combobox label="Currency" value={currency} onchange={handleInputChange} required options={currencyOptions}></lightning-combobox>
-        <lightning-combobox label="Tier" value={tier} onchange={handleInputChange} required options={tierOptions}></lightning-combobox>
-        
-        <lightning-textarea label="Description" value={description} onchange={handleInputChange}></lightning-textarea>
+        <lightning-combobox
+            label="Currency"
+            value={currency}
+            options={currencyOptions}
+            onchange={handleChange}
+            data-id="currency" required>
+        </lightning-combobox>
 
-        <c-account-lookup label="Select Account" onselect={handleAccountSelect}></c-account-lookup>
+        <lightning-combobox
+            label="Tier"
+            value={tier}
+            options={tierOptions}
+            onchange={handleChange}
+            data-id="tier" required>
+        </lightning-combobox>
 
-        <c-product-lookup label="Product" onselect={handleProductSelect}></c-product-lookup>
-       
+        <lightning-input
+            type="text"
+            label="Description"
+            value={description}
+            onchange={handleChange}
+            data-id="description">
+        </lightning-input>
 
+        <c-account-lookup
+            label="Account"
+            onselect={handleAccountSelect}>
+        </c-account-lookup>
 
+        <c-product-lookup
+            label="Product"
+            onselect={handleProductSelect}>
+        </c-product-lookup>
 
-        <lightning-button variant="brand" label="Next" onclick={handleNext}></lightning-button>
-        <lightning-button variant="neutral" label="Cancel" onclick={handleCancel}></lightning-button>
-
-        <lightning-button label="Submit" onclick={handleSubmit}></lightning-button>
-        
+        <lightning-button
+            label="Next"
+            onclick={handleNext}
+            variant="brand">
+        </lightning-button>
+             
     </lightning-card>
-
 </template>

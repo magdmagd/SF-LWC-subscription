@@ -1,26 +1,23 @@
 <template>
-    <lightning-card title="Subscription Summary" icon-name="standard:summary">
-        <div class="slds-m-around_medium">
-            <lightning-layout>
-                <lightning-layout-item size="6">
-                    <lightning-formatted-text label="Subscription Type" value={subscriptionType}></lightning-formatted-text>
-                    <lightning-formatted-text label="Subscription Name" value={subscriptionName}></lightning-formatted-text>
-                    <lightning-formatted-number label="Value" value={value} format-style="currency" currency-code={currency}></lightning-formatted-number>
-                    <lightning-formatted-text label="Currency" value={currency}></lightning-formatted-text>
-                    <lightning-formatted-text label="Tier" value={tier}></lightning-formatted-text>
-                    <lightning-formatted-text label="Description" value={description}></lightning-formatted-text>
-                </lightning-layout-item>
-                <lightning-layout-item size="6">
-                    <lightning-formatted-text label="Account" value={selectedAccountName}></lightning-formatted-text>
-                    <lightning-formatted-text label="Product" value={selectedProductName}></lightning-formatted-text>
-                </lightning-layout-item>
-            </lightning-layout>
-        </div>
-        
-        <!-- Actions -->
-        <div class="slds-m-top_medium">
-            <lightning-button variant="neutral" label="Back" onclick={handleBack}></lightning-button>
-            <lightning-button variant="brand" label="Submit" onclick={handleSubmit}></lightning-button>
-        </div>
+    <lightning-card title="Subscription Summary">
+        <!-- Conditional rendering to check if subscriptionData is defined -->
+        <template if:true={subscriptionData}>
+            <p><strong>Name:</strong> {subscriptionData.name}</p>
+            <p><strong>Subscription Type:</strong> {subscriptionData.subscriptionType}</p>
+            <p><strong>Value:</strong> {subscriptionData.value}</p>
+            <p><strong>Currency:</strong> {subscriptionData.currency}</p>
+            <p><strong>Tier:</strong> {subscriptionData.tier}</p>
+            <p><strong>Description:</strong> {subscriptionData.description}</p>
+            <p><strong>Account:</strong> {subscriptionData.accountId}</p>
+            <p><strong>Product:</strong> {subscriptionData.productId}</p>
+
+            <lightning-button label="Back" onclick={handleBack}></lightning-button>
+            <lightning-button label="Submit" variant="brand" onclick={handleSubmit}></lightning-button>
+        </template>
+
+        <!-- Fallback message if subscriptionData is not defined -->
+        <template if:false={subscriptionData}>
+            <p>No subscription data available.</p>
+        </template>
     </lightning-card>
 </template>

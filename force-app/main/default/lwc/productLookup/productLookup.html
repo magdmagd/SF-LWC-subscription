@@ -1,10 +1,29 @@
 <template>
-    <lightning-combobox
-        name="product"
-        label={label}
-        placeholder="Search Products"
-        options={productOptions}
-        value={value}
-        onchange={handleSelect}>
-    </lightning-combobox>
+    <lightning-card title="Product Lookup">
+        <lightning-input 
+            type="text" 
+            label={label} 
+            placeholder="Search Products..." 
+            onchange={handleSearchChange} 
+            value={searchTerm}
+        ></lightning-input>
+        
+        <template if:true={products}>
+            <ul>
+                <template for:each={products} for:item="product">
+                    <li key={product.Id}>
+                        <lightning-button 
+                            label={product.Name} 
+                            onclick={handleProductSelect} 
+                            data-id={product.Id}>
+                        </lightning-button>
+                    </li>
+                </template>
+            </ul>
+        </template>
+
+        <template if:true={error}>
+            <p class="slds-text-color_error">Error: {error}</p>
+        </template>
+    </lightning-card>
 </template>

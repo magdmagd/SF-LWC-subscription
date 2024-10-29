@@ -2,13 +2,13 @@ import { LightningElement, track } from 'lwc';
 
 export default class SubscriptionForm extends LightningElement {
     @track subscriptionType;
-    @track subscriptionName;
+    @track name;
     @track value;
     @track currency;
     @track tier;
     @track description;
-    @track selectedProductId;
-    @track selectedAccountId;
+    @track accountId;
+    @track productId;
 
     currencyOptions = [
         { label: 'USD', value: 'USD' },
@@ -30,101 +30,44 @@ export default class SubscriptionForm extends LightningElement {
     ];
     
 
+    handleChange(event)
+     {
+        this[event.target.dataset.id] = event.target.value;
+     }
+
     handleInputChange(event) 
     {
         const field = event.target.label.toLowerCase();
         this[field] = event.target.value;
     }
 
-    handleAccountSelect(event) 
-    {
-        this.selectedAccountId = event.detail.value;
+    handleAccountSelect(event) {
+        this.accountId = event.detail.accountId;
     }
 
-    // Handle product selection
-    handleProductSelect(event)
+
+    handleProductSelect(event) 
     {
-        this.selectedProductId = event.detail.value;
+        this.productId = event.detail.productId;
     }
 
-    handleBack()
+    handleNext() 
     {
-        this.showSummary = false ;
-    }
-    handleNext()
-     {
-        // Navigate to Summary Screen
-        this.showSummary = true; 
-        this.dispatchEvent(new CustomEvent('next', {
-            detail: {
-                subscriptionType: this.subscriptionType,
-                subscriptionName: this.subscriptionName,
-                Value: this.value,
-                currency: this.currency,
-                tier: this.tier,
-                description: this.description,
-                selectedProduct: this.selectedProductId,
-                selectedAccount: this.selectedAccountId
-            }
-        }));
-    }//end handleNext()
-
-
-    handleSubmit() 
-    {
-
-        console.log('Selected Account ID:', this.selectedAccountId);
-        createSubscription(
+        const subscriptionData = 
         {
             subscriptionType: this.subscriptionType,
-            subscriptionName: this.subscriptionName,
+            name: this.name ,
             value: this.value,
             currency: this.currency,
             tier: this.tier,
             description: this.description,
-            selectedProduct: this.selectedProductId,
-            selectedAccount: this.selectedAccountId
-        })      
-        .then(result => {
-            if (result.startsWith('Error'))
-            {
-                // Show error message
-            } 
-            else 
-            {
-                // Show success message and possibly reset form
-            }
-        })
-        .catch(error => 
-            {
-            console.error('Error creating subscription:', error);
-            });
-     }
-
-    handleCancel()
-    {
-        this.showSummary = false ;
+            accountId: this.accountId,
+            productId: this.productId
+        };
+        this.dispatchEvent(new CustomEvent('next', { detail: subscriptionData }));
     }
+ 
 
-    handleChange(event) 
-    {
-        const field = event.target.label;
-        if (field === 'Subscription Type') 
-            {
-            this.subscriptionType = event.target.value;
-           } 
-        else if (field === 'Value') 
-            {
-            this.value = event.target.value;
-          } 
-          else if (field === 'Tier') 
-            {
-            this.tier = event.target.value;
-            }
-         else if (field === 'Description')
-             {
-            this.description = event.target.value;
-           }
-      }
 
+     
 }

@@ -1,45 +1,53 @@
-public with sharing class SubscriptionController {
-
-    // Method to create a new Subscription record
+public with sharing class SubscriptionController 
+{
     @AuraEnabled
-    public static String createSubscription(Subscription__c subscription) {
-        try {
-            // Insert the new subscription record into Salesforce
+    public static String createSubscription(Subscription__c subscription) 
+    {
+        // Duplicate check
+        List<Subscription__c> existingSubscriptions = [
+            SELECT Name
+            FROM Subscription__c 
+            WHERE Account__c = :subscription.Account__c 
+            AND Product__c = :subscription.Product__c 
+            AND Tier__c = :subscription.Tier__c
+        ];
+        if (!existingSubscriptions.isEmpty()) {
+            return 'A subscription for this account, product, and tier already exists.';
+        }
+
+        try 
+        {
             insert subscription;
-            return subscription.Name;
-        } catch (Exception ex) {
-            throw new AuraHandledException('Error creating subscription: ' + ex.getMessage());
+            return 'Subscription created successfully.';
+        } catch (Exception e) 
+        {
+            return 'Error creating subscription: ' + e.getMessage();
         }
     }
 
-    // Existing method to retrieve subscription details
-    @AuraEnabled(cacheable=true)
-    public static Subscription__c getSubscriptionDetails(String subscriptionName) {
-        try {
-            return [
-                SELECT Name, Subscription_Type__c, Value__c, Currency__c, Tier__c, 
-                       Description__c, Product__r.Name, Account__r.Name 
-                FROM Subscription__c
-                WHERE Name = :subscriptionName
-                LIMIT 1
-            ];
-        } catch (Exception ex) {
-            throw new AuraHandledException('Error fetching subscription: ' + ex.getMessage());
-        }
+     // Method to fetch subscriptions based on the name (since no ID field)
+     @AuraEnabled(cacheable=true)
+     public static List<Subscription__c> getSubscriptionsByName(String name) 
+     {
+         try
+          {
+             List<Subscription__c> subscriptions = 
+             [
+                 SELECT Name, Subscription_Type__c, Value__c, Currency__c, Tier__c, Description__c, Account__c, Product__c
+                 FROM Subscription__c
+                 WHERE Name = :name
+             ];
+              return subscriptions;
+        } 
+        catch (Exception e) {
+             System.debug('Error fetching subscriptions: ' + e.getMessage());
+             return new List<Subscription__c>();
+         }
+
+
     }
 
-    // Existing method to fetch all subscriptions related to a specific Account
-    @AuraEnabled(cacheable=true)
-    public static List<Subscription__c> getSubscriptionsByAccount(Id accountId) {
-        try {
-            return [
-                SELECT Id, Subscription_Type__c, Value__c, Currency__c, Tier__c, 
-                       Description__c, Product__r.Name, Account__r.Name 
-                FROM Subscription__c
-                WHERE Account__c = :accountId
-            ];
-        } catch (Exception ex) {
-            throw new AuraHandledException('Error fetching subscriptions: ' + ex.getMessage());
-        }
-    }
+    
+
+
 }

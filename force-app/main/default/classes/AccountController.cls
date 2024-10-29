@@ -1,6 +1,8 @@
-public with sharing class AccountController {
+public with sharing class AccountController 
+{
     @AuraEnabled(cacheable=true)
-    public static List<Account> findAccounts(String searchTerm) {
+    public static List<Account> findAccounts(String searchTerm)
+     {
         return [
             SELECT Id, Name 
             FROM Account 
@@ -8,4 +10,4 @@ public with sharing class AccountController {
             LIMIT 10
         ];
     }
-}
+}//end AccountController
